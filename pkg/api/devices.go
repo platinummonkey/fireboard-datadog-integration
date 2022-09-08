@@ -129,7 +129,9 @@ type DevicePropertiesResponse struct {
 
 }
 
-func (a *defaultApiClient) ListDevices() (*DevicePropertiesResponse, error) {
+type ListDevicesResponse []DevicePropertiesResponse
+
+func (a *defaultApiClient) ListDevices() (ListDevicesResponse, error) {
 	c := a.getHttpClient()
 	urlPath := a.constructURL(devicesListAPIPath)
 	ctx, cancel := context.WithTimeout(context.Background(), a.GetTimeout())
@@ -163,12 +165,12 @@ func (a *defaultApiClient) ListDevices() (*DevicePropertiesResponse, error) {
 		return nil, fmt.Errorf("unable to obtain auth token: %v", string(respData))
 	}
 
-	var deviceResp DevicePropertiesResponse
+	var deviceResp ListDevicesResponse
 	err = json.Unmarshal(respData, &deviceResp)
 	if err != nil {
 		return nil, err
 	}
-	return &deviceResp, nil
+	return deviceResp, nil
 }
 
 func (a *defaultApiClient) GetDevice(deviceUUID string) (*DevicePropertiesResponse, error) {

@@ -18,7 +18,7 @@ type APIClient interface {
 	// SetBaseURL update the base fireboard api url
 	SetBaseURL(url string)
 	// SetTimeout sets the timeout configuration value
-	SetTimeout(timeout time.Duration) time.Duration
+	SetTimeout(timeout time.Duration)
 	// GetTimeout get the timeout configuration value
 	GetTimeout() time.Duration
 
@@ -26,7 +26,7 @@ type APIClient interface {
 	GetAuthToken(username, password string) (string, error)
 
 	// ListDevices will list all devices
-	ListDevices() (*DevicePropertiesResponse, error)
+	ListDevices() (ListDevicesResponse, error)
 	// GetDevice will get a single device information
 	GetDevice(deviceUUID string) (*DevicePropertiesResponse, error)
 	// GetRealTimeDeviceTemperature will get the current real-time device temperatures. Only valid for active sessions.
