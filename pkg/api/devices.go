@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -100,6 +103,72 @@ type DeviceLog struct {
 	BLESignalLevel          int64     `json:"bleSignalLevel"` // BLE signal level - dB: -93
 	YFBModel                string    `json:"yfbModel"`       // some specific model? - "YS640"
 	CommercialMode          string    `json:"commercialMode"` // a string representation of "true" or "false"
+}
+
+// CPUPercent returns cpu usage from a string to a percentage
+func (l DeviceLog) CPUPercent() float64 {
+	if l.CPUUsage == "" {
+		return 0
+	}
+
+	val, err := strconv.Atoi(strings.TrimSuffix(l.CPUUsage, "%"))
+	if err != nil {
+		return 0
+	}
+	return float64(val)
+}
+
+var usageRegex = regexp.MustCompile("([0-9.]+)\D+\/([0-9.]+)\D+")
+
+func (l DeviceLog) DiskUsagePercent() float64 {
+	if l.DiskUsage == "" {
+		return 0
+	}
+
+	res := usageRegex.FindAllStringSubmatch(l.DiskUsage, -1)
+	n, err := strconv.ParseFloat(res[0][1])
+	if err != nil {
+		return 0
+	}
+	d, err := strconv.ParseFloat(res[0][2])
+	if err != nil {
+		return 0
+	}
+	return float64(n) / float64(d)
+}
+
+func (l DeviceLog) MemoryUsagePercent() float64 {
+	if l.MemoryUsage == "" {
+		return 0
+	}
+
+	res := usageRegex.FindAllStringSubmatch(l.MemoryUsage, -1)
+	n, err := strconv.ParseFloat(res[0][1])
+	if err != nil {
+		return 0
+	}
+	d, err := strconv.ParseFloat(res[0][2])
+	if err != nil {
+		return 0
+	}
+	return float64(n) / float64(d)
+}
+
+// LinkQualityPercent will return the link quality in %
+func (l DeviceLog) LinkQualityPercent() float64 {
+	if l.LinkQuality == "" {
+		return 0
+	}
+	parts := strings.Split(l.LinkQuality, "/")
+	n, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return 0
+	}
+	d, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return 0
+	}
+	return float64(n) / float64(d)
 }
 
 type DevicePropertiesResponse struct {

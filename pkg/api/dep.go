@@ -29,9 +29,11 @@ type APIClient interface {
 	ListDevices() (ListDevicesResponse, error)
 	// GetDevice will get a single device information
 	GetDevice(deviceUUID string) (*DevicePropertiesResponse, error)
-	// GetRealTimeDeviceTemperature will get the current real-time device temperatures. Only valid for active sessions.
+	// GetRealTimeDeviceTemperature will get the latest temperature values per channel from the device using the Temps endpoint.
+	// Temperature values are included if they are less than a minute old, otherwise nothing is returned for the channel.
 	GetRealTimeDeviceTemperature(deviceUUID string) (*DevicePropertiesResponse, error)
-	// GetRealTimeDeviceDriveData will get the current real-time device drive data. Only valid for active sessions.
+	// GetRealTimeDeviceDriveData will get the latest FireBoard Drive log information for your device using the Drivelog endpoint.
+	// Drive log information is returned if less than a minute old.
 	GetRealTimeDeviceDriveData(deviceUUID string) (*DevicePropertiesResponse, error)
 
 	// ListAllSessions list all sessions

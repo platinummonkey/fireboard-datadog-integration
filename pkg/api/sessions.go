@@ -162,7 +162,7 @@ func (a *defaultApiClient) GetSession(sessionID int64) (*SessionGetResponse, err
 type SessionChartObject struct {
 	ChannelID  json.Number `json:"channel_id,omitempty"` // the channel id. ${type}_${uuid} or an integer
 	DegreeType int64       `json:"degreetype,omitempty"` // 1 = C, 2 = F
-	Label      int64       `json:"label,omitempty"`      // the channel label
+	Label      string      `json:"label,omitempty"`      // the channel label
 	Device     string      `json:"device,omitempty"`     // the device UUID
 	X          []int64     `json:"x,omitempty"`          // the timestamps in epoch seconds for the data
 	Y          []float32   `json:"y,omitempty"`          // the values in degreeType if a temperature
